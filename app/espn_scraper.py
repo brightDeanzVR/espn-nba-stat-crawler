@@ -2,6 +2,10 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
+def extract_specified(stats,type):
+	return stats[0][type].values.tolist()
+
+
 def get_player_list(soup, player_name):
 	ps = pd.read_html('{}{}'.format(player_id_url,player_name))
 	
@@ -22,18 +26,18 @@ def get_player_list(soup, player_name):
 	index = int(input('Select player: '))
 	index = index - 1
 	stats = pd.read_html('{}{}'.format(player_stats_url, pids[index]))
-	reb = stats[0]["REB"]
-	ast = stats[0]["AST"]
-	pts = stats[0]["PTS"]
+	reb = extract_specified(stats,'REB')
+	ast = extract_specified(stats, 'AST')
+	pts = extract_specified(stats, 'PTS')
 	return pids[index],pnames[index],reb,ast,pts
 
 def get_player_stats(soup):
 	link = soup.find(property="og:url")
 	pid = str(link).split('/')[7]
 	stats = pd.read_html('{}{}'.format(player_stats_url, pid))
-	reb = stats[0]["REB"]
-	ast = stats[0]["AST"]
-	pts = stats[0]["PTS"]
+	reb = extract_specified(stats,'REB')
+	ast = extract_specified(stats, 'AST')
+	pts = extract_specified(stats, 'PTS')
 	return pid,reb,ast,pts
 
 player_id_url = 'https://www.espn.com/nba/players/_/search/'

@@ -2,82 +2,86 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
-def extract_specified(stats,type):
-	return stats[0][type].values.tolist()
+
+def extract_specified(stats, type):
+    return stats[0][type].values.tolist()
 
 
 def get_player_list(soup, player_name):
-	ps = pd.read_html('{}{}'.format(player_id_url,player_name))
-	
-	rs = soup.select("a[href*=\/nba\/player\/_\/id\/]")
+    ps = pd.read_html('{}{}'.format(player_id_url, player_name))
 
-	pnames = []
-	pids = []
-	c = 1
-	#extract ids
-	for r in rs:
+    rs = soup.select("a[href*=\/nba\/player\/_\/id\/]")
 
-		pnames.append(r.text)
-		print('{}. {}'.format(c,r.text))
-		pids.append(str(r).split('/')[7])
-		c = c+1
+    pnames = []
+    pids = []
+    c = 1
+    # extract ids
+    for r in rs:
 
+        pnames.append(r.text)
+        print('{}. {}'.format(c, r.text))
+        pids.append(str(r).split('/')[7])
+        c = c+1
 
-	index = int(input('Select player: '))
-	index = index - 1
-	stats = pd.read_html('{}{}'.format(player_stats_url, pids[index]))
-	reb = extract_specified(stats,'REB')
-	ast = extract_specified(stats, 'AST')
-	pts = extract_specified(stats, 'PTS')
-	return pids[index],pnames[index],reb,ast,pts
+    index = int(input('Select player: '))
+    index = index - 1
+    stats = pd.read_html('{}{}'.format(player_stats_url, pids[index]))
+    reb = extract_specified(stats, 'REB')
+    ast = extract_specified(stats, 'AST')
+    pts = extract_specified(stats, 'PTS')
+    return pids[index], pnames[index], reb, ast, pts
+
 
 def get_player_stats(soup):
-	link = soup.find(property="og:url")
-	pid = str(link).split('/')[7]
-	stats = pd.read_html('{}{}'.format(player_stats_url, pid))
-	reb = extract_specified(stats,'REB')
-	ast = extract_specified(stats, 'AST')
-	pts = extract_specified(stats, 'PTS')
-	return pid,reb,ast,pts
+    link = soup.find(property="og:url")
+    pid = str(link).split('/')[7]
+    stats = pd.read_html('{}{}'.format(player_stats_url, pid))
+    reb = extract_specified(stats, 'REB')
+    ast = extract_specified(stats, 'AST')
+    pts = extract_specified(stats, 'PTS')
+    return pid, reb, ast, pts
+
 
 player_id_url = 'https://www.espn.com/nba/players/_/search/'
 player_stats_url = 'https://www.espn.com/nba/player/gamelog/_/id/'
 
 
+def crawl_rest(player_name):
+    html = requests.get('{}{}'.format(player_id_url, player_name)).text
+    soup = BeautifulSoup(html, 'html.parser')
+    link = soup.find(property="og:url")
+    if link == None:
+        player_id, player_name, rebounds, assists, points = get_player_list(
+            soup, player_name)
+        return rebounds, assists, points
+    else:
+        get_player_stats(soup)
+        player_id, rebounds, assists, points = get_player_stats(soup)
+        return rebounds, assists, points
+
+
 def crawl():
-	player_name = input('Enter player name: ')
+    player_name = input('Enter player name: ')
 
-	html = requests.get('{}{}'.format(player_id_url, player_name)).text
-	soup = BeautifulSoup(html, 'html.parser')
-	link = soup.find(property="og:url")
-	if link == None :
-		player_id,player_name,rebounds,assists,points = get_player_list(soup, player_name)
-		print('Showing results for {} with id {}...'.format(player_name, player_id))
-		print(rebounds)
-		print(assists)
-		print(points)
+    html = requests.get('{}{}'.format(player_id_url, player_name)).text
+    soup = BeautifulSoup(html, 'html.parser')
+    link = soup.find(property="og:url")
+    if link == None:
+        player_id, player_name, rebounds, assists, points = get_player_list(
+            soup, player_name)
+        print('Showing results for {} with id {}...'.format(player_name, player_id))
+        print(rebounds)
+        print(assists)
+        print(points)
 
-	else: 
-		get_player_stats(soup)
-		player_id,rebounds,assists,points = get_player_stats(soup)
-		print('Showing results for {} with id {}...'.format(player_name, player_id))
-		print(rebounds)
-		print(assists)
-		print(points)
+    else:
+        get_player_stats(soup)
+        player_id, rebounds, assists, points = get_player_stats(soup)
+        print('Showing results for {} with id {}...'.format(player_name, player_id))
+        print(rebounds)
+        print(assists)
+        print(points)
+
 
 if __name__ == '__main__':
-	crawl()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    crawl()

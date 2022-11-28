@@ -36,4 +36,4 @@ def get_player_stats(player_id):
     return jsonify(json.loads(json_data))
 
 
-app.run()
+app.run(port=5001)

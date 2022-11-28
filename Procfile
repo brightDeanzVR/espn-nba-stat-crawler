@@ -1,1 +1,1 @@
-bot: python serve.py $PORT
+web: gunicorn serve:app

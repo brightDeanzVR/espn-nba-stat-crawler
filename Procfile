@@ -1,1 +1,1 @@
-python .
+web: python .

@@ -8,6 +8,14 @@ def extract_specified(stats, type):
     return stats[0][type].values.tolist()
 
 
+def query_player_stats(player_id):
+    stats = pd.read_html('{}{}'.format(player_stats_url, player_id))
+    reb = extract_specified(stats, 'REB')
+    ast = extract_specified(stats, 'AST')
+    pts = extract_specified(stats, 'PTS')
+    return reb, ast, pts
+
+
 def get_html_elements(player_name):
     html = requests.get('{}{}'.format(player_id_url, player_name)).text
     soup = BeautifulSoup(html, 'html.parser')

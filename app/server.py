@@ -34,6 +34,3 @@ def get_player_stats(player_id):
                            'Assists': json.dumps(asts)}, {'Points': json.dumps(pts)}])
 
     return jsonify(json.loads(json_data))
-
-
-app.run(port=5001)

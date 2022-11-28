@@ -3,7 +3,6 @@ import json
 from flask import Flask, jsonify, redirect, url_for
 
 from app.espn_scraper_rest import get_player_list, get_html_elements
-from models.player import Player
 
 
 app = Flask(__name__)

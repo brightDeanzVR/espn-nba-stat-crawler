@@ -1,1 +1,1 @@
-web: python serve.py $PORT
+bot: python serve.py $PORT

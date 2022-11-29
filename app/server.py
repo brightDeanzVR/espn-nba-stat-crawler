@@ -1,11 +1,13 @@
 import json
 
 from flask import Flask, jsonify, redirect, url_for
+from flask_cors import CORS, cross_origin
 
 from app.espn_scraper_rest import get_player_list, get_html_elements, query_player_stats
 
 
 app = Flask(__name__)
+cors = CORS(app)
 
 
 @app.route('/')
@@ -19,6 +21,7 @@ def status():
 
 
 @app.route('/nba/player/<player_name>', methods=['GET'])
+@cross_origin()
 def get_players(player_name):
     html, soup = get_html_elements(player_name)
     found_soup = soup
@@ -28,8 +31,10 @@ def get_players(player_name):
 
 
 @app.route('/nba/player/<player_id>/stats')
+@cross_origin()
 def get_player_stats(player_id):
     rebs, asts, pts = query_player_stats(player_id)
+
     json_data = json.dumps(
         {'Rebounds': json.dumps(rebs), 'Assists': json.dumps(asts), 'Points': json.dumps(pts)})
 

@@ -30,7 +30,7 @@ def get_players(player_name):
 @app.route('/nba/player/<player_id>/stats')
 def get_player_stats(player_id):
     rebs, asts, pts = query_player_stats(player_id)
-    json_data = json.dumps([{'Rebounds': json.dumps(rebs)}, {
-                           'Assists': json.dumps(asts)}, {'Points': json.dumps(pts)}])
+    json_data = json.dumps({'Rebounds': json.dumps(rebs)}, {
+                           'Assists': json.dumps(asts)}, {'Points': json.dumps(pts)})
 
     return jsonify(json.loads(json_data))

@@ -3,7 +3,7 @@ import json
 from flask import Flask, jsonify, redirect, url_for
 from flask_cors import CORS, cross_origin
 
-from app.espn_scraper_rest import get_player_list, get_html_elements, query_player_stats
+from crawler.espn_scraper_rest import get_player_list, get_html_elements, query_player_stats
 
 
 app = Flask(__name__)

@@ -1,7 +1,10 @@
-from app.server import app
+from crawler.server import app
 
 
-app.run(host='0.0.0.0', port=8000)
+def start():
+
+    app.run(host='0.0.0.0', port=8000)
+
 
 '''
 if __name__ == "__main__":

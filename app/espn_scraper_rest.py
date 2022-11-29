@@ -40,8 +40,9 @@ def get_player_list(soup, player_name):
         return players
 
     pid = str(link).split('/')[7]
+    players.append(Player(player_name, pid))
 
-    return players.append(Player(player_name, pid))
+    return players
 
 
 player_id_url = 'https://www.espn.com/nba/players/_/search/'
